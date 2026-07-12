@@ -11,13 +11,26 @@ connectDB();
 const app = express();
 
 app.use(express.json());
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://full-stack-task-management-system-b3pqf63r9-zaid-techy1.vercel.app",
+];
+
 app.use(
     cors({
-        origin: [
-            "http://localhost:5173",
-            "full-stack-task-management-system-b3cd6xsld-zaid-techy1.vercel.app"
-        ],
-        credentials: true
+        origin: function (origin, callback) {
+
+            // allow requests with no origin (Postman, mobile apps)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
     })
 );
 
